@@ -15,38 +15,99 @@ exports.deleteFile = async function deleteFile(filePath) {
  * @param {*} input array of input
  * @param {*} output output of Promise.allsettled
  * @param {*} expireAt date to delete document from db
+ * @param {*} processImmediate boolean to indicate process immediate or batch
  */
-exports.buildResponseFromPromises = (input, output, expireAt) => {
+exports.buildLabelsResponseFromPromises = (
+	input,
+	output,
+	expireAt,
+	processImmediate,
+	requestId
+) => {
 	let response = {
 		partialSuccess: false,
 		success: [],
-		failure: []
+		failure: [],
+		requestId
 	}
 	let dbEntries = []
 	try {
 		output.forEach((data, index) => {
+			let imageId = input[index].filename
+			let fileName = input[index].originalname
 			if (data.status == 'fulfilled') {
-				let imageId = input[index].filename
-				let fileName = input[index].originalname
 				let temp = {
 					imageId,
 					fileName,
 					labels: [],
 					categories: [],
-					expireAt
+					expireAt,
+					processImmediate
 				}
 				data.value.Labels.forEach((label) => {
 					temp.labels.push(label.Name)
 					temp.categories.push(...label.Categories.map((c) => c.Name))
-				}),
-					response.success.push(temp)
-				dbEntries.push({ imageId, ...data.value, expireAt, fileName })
+				})
+				response.success.push(temp)
+				dbEntries.push({
+					imageId,
+					...data.value,
+					expireAt,
+					fileName,
+					processImmediate,
+					requestId
+				})
 			} else {
 				response.partialSuccess = true
-				response.failure.push({ id: input.filename })
+				response.failure.push({ imageId, fileName })
 			}
 		})
 		return { response, dbEntries }
+	} catch (error) {
+		throw error
+	}
+}
+
+exports.buildQueueResponseFromPromises = (
+	input,
+	output,
+	expireAt,
+	processImmediate,
+	requestId
+) => {
+	let response = {
+		partialSuccess: false,
+		success: [],
+		failure: [],
+		requestId
+	}
+	let queueEntries = []
+	try {
+		output.forEach((data, index) => {
+			let imageId = input[index].filename
+			let fileName = input[index].originalname
+			if (data.status == 'fulfilled') {
+				let temp = {
+					imageId,
+					fileName,
+					expireAt,
+					processImmediate
+				}
+				response.success.push(temp)
+				queueEntries.push({
+					imageId,
+					...data.value,
+					expireAt,
+					fileName,
+					processImmediate,
+					requestId
+				})
+			} else {
+				response.partialSuccess = true
+				response.failure.push({ imageId, fileName })
+			}
+		})
+		return { response, queueEntries }
 	} catch (error) {
 		throw error
 	}

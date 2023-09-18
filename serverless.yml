@@ -4,6 +4,11 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  environment:
+    DETECTLABELS_QUEUE_URL: ${self:custom.labelsQueue.url}
+    DETECTLABELS_QUEUE_ARN: ${self:custom.labelsQueue.arn}
+    DETECTLABELS_QUEUE_NAME: ${self:custom.labelsQueue.name}
   deploymentBucket:
     name: arun-practice
     maxPreviousDeploymentArtifacts: 5
@@ -14,13 +19,33 @@ provider:
       Action:
         - rekognition:DetectLabels
       Resource: "*"
+    - Effect: Allow
+      Action: 
+        - s3:*
+      Resource: arn:aws:s3:::arun-practice/*
+    - Effect: Allow
+      Action:
+        - sqs:*
+      Resource: ${self:custom.labelsQueue.arn}
+
+resources:
+  Resources:
+    DetectImageLabelsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.labelsQueue.name}
+    
 
 functions:
   api:
     handler: index.handler
     events:
       - httpApi: '*'
-
+      
 
 custom:
   envVars: ${file(config.js)}
+  labelsQueue:
+    name: DetectImageLabelsQueue-${self:provider.stage}
+    arn: !GetAtt  DetectImageLabelsQueue.Arn
+    url: !Ref  DetectImageLabelsQueue
