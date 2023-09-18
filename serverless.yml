@@ -4,9 +4,23 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
+  deploymentBucket:
+    name: arun-practice
+    maxPreviousDeploymentArtifacts: 5
+  deploymentPrefix: lambda
+  region: ap-south-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rekognition:DetectLabels
+      Resource: "*"
 
 functions:
   api:
     handler: index.handler
     events:
       - httpApi: '*'
+
+
+custom:
+  envVars: ${file(config.js)}
