@@ -3,7 +3,8 @@ const { v4: uuid } = require('uuid')
 const {
 	deleteFile,
 	buildLabelsResponseFromPromises,
-	buildQueueResponseFromPromises
+	buildQueueResponseFromPromises,
+	buildDBResponseFromPromises
 } = require('../utils/util')
 const rekognitionService = require('../services/rekognition')
 const processDB = require('../db/process')
@@ -94,6 +95,33 @@ processController.processBatch = async (req, res) => {
 	} finally {
 		if (req.files && req.files.length)
 			req.files.forEach((file) => deleteFile(file.path))
+	}
+}
+
+//direct lambda handler not added to express
+processController.detectLabels = async (event, context) => {
+	try{
+		if(!event.Records || !event.Records.length || !event.Records[0].body){
+			console.log("No valid message found.")
+			return
+		}
+		let messages = JSON.parse(event.Records[0].body)
+		let promises = messages.map(rekognitionService.detectLabelsFromS3)
+		let outputPromises = await Promise.allSettled(promises)
+		let now = new Date()
+		now.setFullYear(now.getFullYear() + 1)
+		let { dbEntries } = buildDBResponseFromPromises(
+			messages,
+			outputPromises,
+			now,
+			true
+		)
+		if (dbEntries && dbEntries.length)
+			await processDB.insertMultipleLabels(dbEntries)
+		console.log(`Image Process Successfull! for ${messages}`);
+	}catch(error){
+		console.error("Error while processing images");
+		console.error(error);
 	}
 }
 

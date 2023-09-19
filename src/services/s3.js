@@ -1,7 +1,7 @@
 const fs = require('fs')
 const AWS = require('aws-sdk')
 const S3 = new AWS.S3({
-	region: process.env.AWS_REGION || 'ap-south-1'
+	region: process.env.DEFAULT_AWS_REGION || 'ap-south-1'
 })
 const BUCKET_NAME = process.env.BUCKET_NAME || 'arun-practice'
 const BUCKET_PREFIX = process.env.BUCKET_PREFIX || 'image-recognition/assets/'

@@ -112,3 +112,26 @@ exports.buildQueueResponseFromPromises = (
 		throw error
 	}
 }
+
+exports.buildDBResponseFromPromises = (input, output, expireAt) => {
+	let dbEntries = []
+	try {
+		output.forEach((data, index) => {
+			let message = input[index]
+			if (data.status == 'fulfilled') {
+				let temp = {
+					imageId: message.imageId,
+					fileName: message.fileName,
+					expireAt,
+					processImmediate: message.processImmediate,
+					requestId: message.requestId,
+					...data.value
+				}
+				dbEntries.push(temp)
+			}
+		})
+		return { dbEntries }
+	} catch (error) {
+		throw error
+	}
+}

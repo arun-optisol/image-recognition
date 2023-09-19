@@ -1,9 +1,9 @@
 const fs = require('fs')
 const AWS = require('aws-sdk')
 const SQS = new AWS.SQS({
-	region: process.env.AWS_REGION || 'ap-south-1'
+	region: process.env.DEFAULT_AWS_REGION || 'ap-south-1'
 })
-const QUEUE_URL = "https://sqs.ap-south-1.amazonaws.com/036986051218/DetectImageLabelsQueue-dev" || 'arun-practice'
+const QUEUE_URL = process.env.DETECTLABELS_QUEUE_URL || 'arun-practice'
 
 /**
  *

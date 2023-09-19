@@ -16,6 +16,7 @@
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
-		"nodemon": "^3.0.1"
+		"nodemon": "^3.0.1",
+		"serverless-lift": "^1.28.0"
 	}
 }

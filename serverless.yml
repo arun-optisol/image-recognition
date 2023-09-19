@@ -1,5 +1,6 @@
 service: image-recognition
 frameworkVersion: '3'
+useDotenv: true
 
 provider:
   name: aws
@@ -9,6 +10,11 @@ provider:
     DETECTLABELS_QUEUE_URL: ${self:custom.labelsQueue.url}
     DETECTLABELS_QUEUE_ARN: ${self:custom.labelsQueue.arn}
     DETECTLABELS_QUEUE_NAME: ${self:custom.labelsQueue.name}
+    MONGO_URI: ${env:MONGO_URI}
+    DEFAULT_AWS_REGION: ${env:AWS_REGION}
+    DB_NAME: ${env:DB_NAME}
+    BUCKET_NAME: ${env:BUCKET_NAME}
+    BUCKET_PREFIX: ${env:BUCKET_PREFIX}
   deploymentBucket:
     name: arun-practice
     maxPreviousDeploymentArtifacts: 5
@@ -41,6 +47,12 @@ functions:
     handler: index.handler
     events:
       - httpApi: '*'
+  imageProcess:
+    handler: src/controllers/processController.detectLabels
+    events:
+      - sqs: 
+          arn: ${self:custom.labelsQueue.arn}
+          batchSize: 10
       
 
 custom:

@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient
 const mongoURI = process.env.MONGO_URI || 'localhost:27017'
+console.log("MONGO:::", mongoURI);
 const client = new MongoClient(mongoURI, {
 	useNewUrlParser: true
 })
