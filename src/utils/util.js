@@ -125,7 +125,12 @@ exports.buildDBResponseFromPromises = (input, output, expireAt) => {
 					expireAt,
 					processImmediate: message.processImmediate,
 					requestId: message.requestId,
-					...data.value
+					...data.value,
+					Location: message.Location,
+					Key: message.Key,
+					key: message.key,
+					Bucket: message.Bucket,
+					ETag: message.ETag,
 				}
 				dbEntries.push(temp)
 			}

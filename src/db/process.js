@@ -8,7 +8,6 @@ const processDB = {}
  */
 processDB.insertMultipleLabels = async (labels) => {
 	try {
-        console.log("inserting labels::");
         console.log(JSON.stringify(labels, null, 2));
         let isconn = isConnected()
 		if (!isconn) {

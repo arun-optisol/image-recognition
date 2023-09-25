@@ -104,3 +104,37 @@ serverless offline
 ```
 
 To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
+
+### Atlas Search Index Json
+Use this json to create search index in MongoDb Atlas
+```json
+{
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "Labels": {
+        "fields": {
+          "Categories": {
+            "fields": {
+              "Name": {
+                "type": "autocomplete"
+              }
+            },
+            "type": "document"
+          },
+          "Name": {
+            "type": "autocomplete"
+          }
+        },
+        "type": "document"
+      }
+    }
+  },
+  "storedSource": {
+    "include": [
+      "Labels.Name",
+      "Labels.Categories.Name"
+    ]
+  }
+}
+```

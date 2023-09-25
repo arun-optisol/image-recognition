@@ -34,10 +34,9 @@ processController.processImmediate = async (req, res, next) => {
 			rekognitionService.getLabels(file.path)
 		)
 		let outputPromises = await Promise.allSettled(promises)
-		console.log('OUTPUT:::', JSON.stringify(outputPromises, null, 2))
 		let now = new Date()
 		now.setHours(now.getHours() + 1)
-		let requestId = uuid()
+		let requestId = uuid().replace(/-/g, '')
 		let { response, dbEntries } = buildLabelsResponseFromPromises(
 			req.files,
 			outputPromises,
@@ -75,8 +74,7 @@ processController.processBatch = async (req, res) => {
 		}
 		let promises = req.files.map(uploadFiles)
 		let outputPromises = await Promise.allSettled(promises)
-		console.log('OUTPUT:::', JSON.stringify(outputPromises, null, 2))
-		let requestId = uuid()
+		let requestId = uuid().replace(/-/g, '')
 		let now = new Date()
 		now.setHours(now.getHours() + 1)
 		let { response, queueEntries } = buildQueueResponseFromPromises(
