@@ -57,7 +57,7 @@ labels.getById = async (imageId, requestId) => {
 		const labels = await client
 			.db('image-recognition')
 			.collection('labels')
-			.find().toArray()
+			.find(filter).toArray()
         return labels
 	} catch (error) {
 		console.error('Error while getting labels in DB.')
