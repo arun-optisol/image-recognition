@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "b45dab54-82d1-4061-a362-dab4a0cb2129",
+		"name": "image recognition",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22888437"
+	},
+	"item": [
+		{
+			"name": "process image immediate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/arun.k/Downloads/test-hydrant.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/process/immediate",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"process",
+						"immediate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "process image batch",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": [
+								"/C:/Users/arun.k/Downloads/test-hydrant.jpg",
+								"/C:/Users/arun.k/Downloads/test3.jpg",
+								"/C:/Users/arun.k/Downloads/test2.jpg",
+								"/C:/Users/arun.k/Downloads/test1.jpg",
+								"/C:/Users/arun.k/Downloads/MicrosoftTeams-image (4).png"
+							]
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/process/batch",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"process",
+						"batch"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get images by category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/image/search?labels=hydant",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"image",
+						"search"
+					],
+					"query": [
+						{
+							"key": "labels",
+							"value": "hydant"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get image details by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/image/by-id?imageId=1091b6d358ecdf6ffdf29f39ccbda791&requestId=da18c573f7284d80bfa045bd154e5f50",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"image",
+						"by-id"
+					],
+					"query": [
+						{
+							"key": "imageId",
+							"value": "1091b6d358ecdf6ffdf29f39ccbda791"
+						},
+						{
+							"key": "requestId",
+							"value": "da18c573f7284d80bfa045bd154e5f50"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
